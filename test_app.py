@@ -25,7 +25,7 @@ class BoggleAppTestCase(TestCase):
             response = client.get('/')
             html = response.get_data(as_text=True)
 
-            self.assertEqual(response.status_code, 200) #could be a 304 (cache). Use status code for Failures
+            self.assertNotEqual(response.status_code, 404) #could be a 304 (cache). Use status code for Failures
             self.assertIn('<title>Boggle</title>', html)
             self.assertIn('<ul id="words"', html) #may add more things so don't add close tag
 
@@ -33,7 +33,17 @@ class BoggleAppTestCase(TestCase):
         """Test starting a new game."""
 
         with self.client as client:
-            ...
+            response = client.post("/api/new-game")
+            # data = response.get_data(as_text=True) # parse_form_data=True  #get_json
+            parsed_data = response.get_json()
+            self.assertIsNotNone(parsed_data)
+            self.assertTrue(parsed_data["gameId"])
+            self.assertTrue(parsed_data["board"])
+            self.assertIsInstance(parsed_data["gameId"], str)
+            self.assertIsInstance(parsed_data["board"], list)
+            self.assertIsInstance(parsed_data["board"][0], list)
+            self.assertTrue(games)
+          
             # write a test for this route
 
 
