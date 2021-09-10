@@ -29,22 +29,29 @@ class WordList:
 
     def check_word(self, word):
         """Is word in word list?
-        >>> english_words = WordList("dictionary.txt")
-        >>> english_words.check_word("happy")
-        False
-        >>> english_words.check_word("HAPPY")
-        True
-        >>> english_words.check_word("")
-        False
-        >>> english_words.check_word("SDVDFFG")
-        False
-        >>> english_words.check_word()
-        Traceback (most recent call last):
-        ...
-        TypeError: check_word() missing 1 required positional argument: 'word'
 
-        >>> english_words.check_word(4)
-        False
+            >>> english_words = WordList("dictionary.txt")
+            
+            >>> english_words.check_word("happy")
+            False
+
+            >>> english_words.check_word("HAPPY")
+            True
+
+            >>> english_words.check_word("")
+            False
+
+            >>> english_words.check_word("SDVDFFG")
+            False
+
+            >>> english_words.check_word()
+            Traceback (most recent call last):
+            ...
+            TypeError: check_word() missing 1 required positional argument: 'word'
+
+            >>> english_words.check_word(4)
+            False
+
         """
         
         return word in self.words

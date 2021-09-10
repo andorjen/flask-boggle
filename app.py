@@ -19,7 +19,10 @@ def homepage():
 
 @app.post("/api/new-game")
 def new_game():
-    """Start a new game and return JSON: {game_id, board}."""
+    """Start a new game and return JSON: {game_id, board}.
+    
+    
+    """
 
     # get a unique string id for the board we're creating
     game_id = str(uuid4())
