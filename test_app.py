@@ -25,9 +25,9 @@ class BoggleAppTestCase(TestCase):
             response = client.get('/')
             html = response.get_data(as_text=True)
 
-            self.assertEqual(response.status_code, 200)
+            self.assertEqual(response.status_code, 200) #could be a 304 (cache). Use status code for Failures
             self.assertIn('<title>Boggle</title>', html)
-            self.assertIn('<ul id="words">', html)
+            self.assertIn('<ul id="words"', html) #may add more things so don't add close tag
 
     def test_api_new_game(self):
         """Test starting a new game."""
