@@ -37,20 +37,19 @@ def score_word():
     """Listens for post requests and extracts a JSON object with game-id & word entry. 
     Will check if word is valid in the word list and findable on the board.
     Returns a JSON response with validity."""
-
-    resp = request.json
-    game_id = resp["game_id"]
-    word = resp["word"]
+                                  
+    game_id = request.json["game_id"]
+    word = request.json["word"]
     
-    word_is_word = games[game_id].is_word_in_word_list(word) #return t/f
-    word_on_board = games[game_id].check_word_on_board(word) #return t/f if on board
-    word_not_dup = games[game_id].is_word_not_a_dup(word) #return t/f if on board
+    game = games[game_id]
+    word_is_word = game.is_word_in_word_list(word) 
+    word_on_board = game.check_word_on_board(word) 
 
     if not word_is_word:
         return jsonify({"result": "not-word"})
+
     if not word_on_board:
         return jsonify({"result": "not-on-board"})
-    if word_not_dup and word_is_word:
-        return jsonify({"result": "ok"})
-    else:
-        return jsonify({"result": "duplicate-word"}) #maybe not needed, tbd
+
+    return jsonify({"result": "ok"})
+

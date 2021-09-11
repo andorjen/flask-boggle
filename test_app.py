@@ -36,8 +36,8 @@ class BoggleAppTestCase(TestCase):
 
         with self.client as client:
             response = client.post("/api/new-game")
-            # data = response.get_data(as_text=True) # parse_form_data=True  #get_json
             parsed_data = response.get_json()
+
             self.assertIsNotNone(parsed_data)
             self.assertTrue(parsed_data["gameId"])
             self.assertTrue(parsed_data["board"])
@@ -47,7 +47,7 @@ class BoggleAppTestCase(TestCase):
             self.assertTrue(games)
         
     def test_api_score_word(self):
-        """Test """
+        """Test api_score_word function for word validity, and return json {"result": <status>} """
 
         with self.client as client:
             response = client.post("/api/new-game")
@@ -55,33 +55,32 @@ class BoggleAppTestCase(TestCase):
 
             #fake game board:
             game_id = parsed_data["gameId"]
-            games[game_id].board = [['J', 'O', 'V', 'C', 'O'],
-                                    ['N', 'O', 'C', 'V', 'F'],
-                                    ['R', 'O', 'J', 'E', 'I'],
-                                    ['K', 'N', 'P', 'W', 'K'],
-                                    ['J', 'E', 'A', 'I', 'E']]
+            game = games[game_id]
+            game.board = [['J', 'O', 'V', 'C', 'O'],      
+                        ['N', 'O', 'C', 'V', 'F'],
+                        ['R', 'O', 'J', 'E', 'I'],
+                        ['K', 'N', 'P', 'W', 'K'],
+                        ['J', 'E', 'A', 'I', 'E']]
             
-            #Can test for word on board and valid word
-            #test for duplicates - put word in twice
-            #invalid words we can make up words
 
-            test_word_on_board = "NOPE"
-            test_word_not_on_board = "COFFEE"
-            test_word_not_a_word = "SLEKFJ"
+            WORD_ON_BOARD = "NOPE"
+            NOT_ON_BOARD = "COFFEE"                       
+            NOT_A_WORD = "SLEKFJ"
+
+            BASE_ROUTE = "/api/score-word"
             
             #testing for new existing word
-            score_word_resp = client.post("/api/score-word", json = {"game_id": game_id, "word": test_word_on_board})
-            self.assertEqual(score_word_resp.get_json(), {"result": "ok"})
+            resp = client.post(BASE_ROUTE, 
+                json={"game_id": game_id, "word": WORD_ON_BOARD})  
+            self.assertEqual(resp.get_json(), {"result": "ok"})
 
-            #testing for word duplication
-            games[game_id].played_words.add("NOPE")
-            score_word_resp = client.post("/api/score-word", json = {"game_id": game_id, "word": test_word_on_board})
-            self.assertEqual(score_word_resp.get_json(), {"result": "duplicate-word"})
 
             #testing for valid word but not on board
-            score_word_resp = client.post("/api/score-word", json = {"game_id": game_id, "word": test_word_not_on_board})
-            self.assertEqual(score_word_resp.get_json(), {"result": "not-on-board"})
+            resp = client.post(BASE_ROUTE, 
+                json={"game_id": game_id, "word": NOT_ON_BOARD})  
+            self.assertEqual(resp.get_json(), {"result": "not-on-board"})
 
             #testing for invalid word
-            score_word_resp = client.post("/api/score-word", json = {"game_id": game_id, "word": test_word_not_a_word})
-            self.assertEqual(score_word_resp.get_json(), {"result": "not-word"})
+            resp = client.post(BASE_ROUTE, 
+                json={"game_id": game_id, "word": NOT_A_WORD}) 
+            self.assertEqual(resp.get_json(), {"result": "not-word"})
